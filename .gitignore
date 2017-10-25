@@ -1,0 +1,5 @@
+node_modules/*
+client/angular-1.6.5/*
+client/jquery/*
+client/socket.io-client/*
+.vscode/*
