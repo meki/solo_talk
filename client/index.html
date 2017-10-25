@@ -7,30 +7,14 @@
     <title>Class Outis</title>
     <link rel="icon" type="image/png" href="/img/favicon.png">
 
-    <script src="/angular-1.6.5/angular.min.js"></script>
     <script src="/socket.io-client/dist/socket.io.slim.js"></script>
     <script src="/jquery/jquery-3.2.1.min.js"></script>
     <link rel="stylesheet" href="/semantic-ui/semantic.min.css">
     <script src="/semantic-ui/semantic.min.js"></script>
-    <script src="/js/app.js"></script>
     <link rel="stylesheet" href="/css/style.css">
-    
   </head>
-  <body ng-controller="mainController">
-  <div id="wrapper">
-    <div id="messages"></div>
-  </div>
-  <div id="sender" class="ui padded grid">
-    <div class="row">
-      <div class="twelve wide column">
-          <textarea placeholder="メッセージを入力" type="text" ng-model="message" autocomplete="off"></textarea>
-      </div>
-      <div id="sendButton" class="four wide column">
-          <button ng-click="send()" class="ui teal right labeled icon button">
-            <i class="send icon"></i>送信
-          </button>
-      </div>
-  </div>
-  </div>
+  <body>
+      <script src="/mithril/mithril.min.js"></script>
+      <script src="/js/app.js"></script>
   </body>
 </html>

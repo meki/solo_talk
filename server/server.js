@@ -1,13 +1,10 @@
 "use strict";
+// Express framework
 const express = require('express');
-require('date-utils');
 const app = express();
-const server = app.listen(3000);
-const io = require('socket.io').listen(server);
-const rootDir = __dirname + "/..";
-
 app.set('port', process.env.PORT || 3000);
-console.log("server listening 3000...");
+
+const rootDir = __dirname + "/..";
 
 const passport = require('passport');
 app.use(passport.initialize());
@@ -30,10 +27,23 @@ passport.use(new authStrategy(function(username, password, done){
 app.use(express.static('client'));
 
 app.get('/', (req, res) => {
-  res.sendFile('client/index.html', { root: rootDir });
+  res.sendFile('index.html', { root: rootDir + '/client/'});
 });
 
-// var validator = require('validator'); 
+app.use((err, req, res, next) => {
+  console.log(err.stack);
+  res.status(500).send({message: err.message});
+});
+
+const server = app.listen(app.get('port'));
+console.log("server listening on port " + app.get('port'));
+
+// date time utility
+require('date-utils');
+
+// socket io
+var io = require('socket.io').listen(server);
+
 
 var connectCount = 0;
 var teacherId = "";
