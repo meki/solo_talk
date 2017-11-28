@@ -1,8 +1,6 @@
 const express = require('express');
 require('date-utils');
 const app = express();
-// const http = require('http').Server(app);
-// const io = require('socket.io')(http);
 const server = app.listen(3000);
 var io = require('socket.io').listen(server);
 const rootDir = __dirname + "/..";
@@ -17,23 +15,31 @@ app.get('/', (req, res) => {
   res.sendFile('client/index.html', { root: rootDir });
 });
 
+// var validator = require('validator'); 
+
+var connectCount = 0;
+var teacherId = "";
 io.on('connection', (socket) => {
   let dt = new Date();
-  console.log(dt.toFormat("YYYY/MM/DD:HH24:MI:SS") + '> user connected');
+  connectCount += 1;
+  console.log('%s > user %s connected\nuser count = %d', dt.toFormat("YYYY/MM/DD:HH24:MI:SS"), socket.id, connectCount);
 
   socket.on('chat message', (msg) => {
+    // 南モードを設定する（div の背景色が変わるだけだが）
+    const teacherCode = "373t";
+
     if(msg) {
-      // msg.replace(/\r?\n/g, '<br>');
-      io.emit('chat message', msg);
+      if(msg === teacherCode) { 
+        teacherId = socket.id;
+        msg = "<teacher login>";
+      }
+
+      io.emit('chat message', {message: msg, isTeacher: (socket.id === teacherId) ? true : false});
     }
   });
 
   socket.on('disconnect', () => {
-    console.log(dt.toFormat("YYYY/MM/DD:HH24:MI:SS") + '> user disconnected');
+    connectCount -= 1;
+    console.log('%s > user %s disconnected\nuser count = %d', dt.toFormat("YYYY/MM/DD:HH24:MI:SS"), socket.id, connectCount);
   });
 });
-
-/*
-app.listen(app.get('port'), () => {
-  console.log('Listening on port ' + app.get('port'));
-});*/

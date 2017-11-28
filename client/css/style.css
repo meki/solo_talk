@@ -34,6 +34,7 @@ body {
 	padding: 0px;
 	width: 100%;
 	height: 100%;
+	font-size: 14pt;
 }
 
 #sender button {
@@ -57,13 +58,26 @@ div#sendButton {
 	width: 100%;
 }
 #messages div {
-	width: 60%;
+	width: 65%;
 	margin-bottom: 8px;
 	margin-top: 8px;
 	margin-left: 16px;
 	margin-right: 16px;
-	padding-top: 16px;
-	padding-bottom: 16px;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	line-height: 1.35em;
+	padding-left: 8px;
 }
-#messages div:nth-child(even) { background: #8f8; }
-#messages div:nth-child(odd) { background: #ff8; }
+/*#messages div.right { background: #8f8; }
+#messages div.left { background: #ff8; }*/
+#messages div.ou_even { background: #8f8; }
+#messages div.ou_odd { background: #ff8; }
+#messages div#teacher {
+	background-color: #007887;
+	color: #fff;
+	padding-left: 8px;
+}
+/*.ui.teal.right.labeled.icon.button
+{
+	background-color: rgb(71, 196, 235);
+}*/
