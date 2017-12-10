@@ -1,12 +1,30 @@
+"use strict";
 const express = require('express');
 require('date-utils');
 const app = express();
 const server = app.listen(3000);
-var io = require('socket.io').listen(server);
+const io = require('socket.io').listen(server);
 const rootDir = __dirname + "/..";
 
 app.set('port', process.env.PORT || 3000);
 console.log("server listening 3000...");
+
+const passport = require('passport');
+app.use(passport.initialize());
+
+var authStrategy = require('passport-local').Strategy;
+passport.use(new authStrategy(function(username, password, done){
+    // ここで username と password を確認して結果を返す
+    if (なんらかのエラー) {
+      return done(エラー内容);
+  }
+  else if (失敗) {
+      return done(null, false);
+  }
+  else if (成功) {
+      return done(null, username);
+  }
+}));
 
 // set static file dir
 app.use(express.static('client'));
