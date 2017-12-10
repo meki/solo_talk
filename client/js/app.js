@@ -1,5 +1,5 @@
 "use strict";
-const app = angular.module('chat',[]);
+
 var chat = {};
 var socket = io();
 
@@ -13,7 +13,7 @@ chat.vm = new function () {
 
     // 送信ボタン
     vm.send = function() {
-      let e = document.getElementById("inputForm")
+      let e = document.getElementById("inputForm");
       if (e.value) {
         socket.emit('chat message', {message: e.value});
         e.value = "";
@@ -25,7 +25,7 @@ chat.vm = new function () {
       socket.on('chat message', function(data) {
         try {
           if(data.message) {
-            vm.list.push(data.message);
+            vm.list.push(data);
           }
         } catch(e) {
           alert('there is a problem: ', e);
@@ -57,7 +57,7 @@ var cmpLowerBtn = {
           )
         )
       ])
-    )
+    );
   }
 }
 
@@ -68,18 +68,35 @@ chat.view = function(ctrl) {
                 if(data.isTeacher)
                 {
                   // 先生は右側
-                  return m('div.ui right floated large segment', msg)
+                  return m('div#teacher.ui right floated large segment', [
+                    m("i.white student icon")
+                    , data.message
+                  ]);
                 }
                 else
                 {
                   // 生徒は左側で背景色を互い違いに
-                  return (i % 2 === 0) ? m('div.ui left ou_even floated large segment', msg) : m('div.ui left ou_odd floated large segment', msg)
+                  let cls = (i % 2 === 0) ? '.ui left ou_even floated large segment' : '.ui left ou_odd floated large segment';
+                  
+                  return m('div' + cls, [
+                    m('i.smile icon')
+                    , data.message]);
                 }
               })
             ]),
             m(cmpLowerBtn)]
-          )
+          );
 }
 
-var root = document.body
-m.mount(root, chat)
+var root = document.body;
+m.mount(root, chat);
+
+var ee = document.createElement("i");
+if(data.isTeacher) {
+  ee.className = 'white student icon';
+  e.id = 'teacher'
+}
+else {
+  ee.className = 'smile icon';
+}
+e.appendChild(ee);

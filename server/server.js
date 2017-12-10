@@ -9,16 +9,27 @@ const rootDir = __dirname + "/..";
 const passport = require('passport');
 app.use(passport.initialize());
 
-var authStrategy = require('passport-local').Strategy;
-passport.use(new authStrategy(function(username, password, done){
-    // ここで username と password を確認して結果を返す
-    if (なんらかのエラー) {
-      return done(エラー内容);
+
+const server = app.listen(app.get('port'));
+console.log("server listening on port " + app.get('port'));
+
+// date time utility
+require('date-utils');
+
+// socket io
+var io = require('socket.io').listen(server);
+
+
+
+var LocalStrategy = require('passport-local').Strategy;
+passport.use(new LocalStrategy(function (username, password, done) {
+  // ここで username と password を確認して結果を返す
+  
+  let isSuccess = (username ==='minamitani' && password === 'zyxw');
+  if (!isSuccess) {
+      return done(null, false, {message: 'ログインに失敗しました。'});
   }
-  else if (失敗) {
-      return done(null, false);
-  }
-  else if (成功) {
+  else {
       return done(null, username);
   }
 }));
@@ -30,20 +41,35 @@ app.get('/', (req, res) => {
   res.sendFile('index.html', { root: rootDir + '/client/'});
 });
 
+app.get('/login', (req, res) => {
+  res.sendFile('login.html', { root: rootDir + '/client/'});
+});
+
 app.use((err, req, res, next) => {
   console.log(err.stack);
   res.status(500).send({message: err.message});
 });
 
-const server = app.listen(app.get('port'));
-console.log("server listening on port " + app.get('port'));
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// date time utility
-require('date-utils');
+app.post('/login',
+    passport.authenticate('local'), /*{ failureRedirect: '/login',
+                                      failureFlash: false,
+                                      session: false },*/
+    function(req, res, next) {
+      res.redirect('/');
+      io.emit('chat message', {message: 'ログイン成功', isTeacher: false});
+    }
+);
 
-// socket io
-var io = require('socket.io').listen(server);
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
 
+passport.deserializeUser(function(user, done) {
+  done(null, user);
+});
 
 var connectCount = 0;
 var teacherId = "";
@@ -56,13 +82,13 @@ io.on('connection', (socket) => {
     // 南モードを設定する（div の背景色が変わるだけだが）
     const teacherCode = "373t";
 
-    if(msg) {
-      if(msg === teacherCode) { 
+    if(msg.message) {
+      if(msg.message === teacherCode) { 
         teacherId = socket.id;
-        msg = "<teacher login>";
+        msg.message = "<teacher login>";
       }
 
-      io.emit('chat message', {message: msg, isTeacher: (socket.id === teacherId) ? true : false});
+      io.emit('chat message', {message: msg.message, isTeacher: (socket.id === teacherId) ? true : false});
     }
   });
 

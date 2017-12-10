@@ -10,6 +10,7 @@
   "author": "Satoshi Sashida",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.18.2",
     "express": "^4.16.1",
     "gulp": "^3.9.1",
     "lodash": "^4.17.4",
