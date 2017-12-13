@@ -51,7 +51,7 @@ var cmpLowerBtn = {
           m("textarea#inputForm",{placeholder: "メッセージを入力", type: "text", autocomplete: "off"})
         ),
         m("div.four wide column",
-          m("div.ui teal right labeled huge icon button",
+          m("div#sendButton.ui teal right labeled icon button",
             {onclick: m.withAttr('value', chat.vm.send)},
             [m("i.send icon"), "送信"]
           )
