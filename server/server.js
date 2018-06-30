@@ -50,6 +50,7 @@ app.get('/login', (req, res) => {
 app.get('/logout', function(req, res) {
   // メッセージを投稿できなくする
   appState.teacher_login = false;
+  res.sendFile('login.html', { root: rootDir + '/client/'});
 });
 
 app.use((err, req, res, next) => {

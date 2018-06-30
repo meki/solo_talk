@@ -16,6 +16,7 @@
     "lodash": "^4.17.4",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
-    "socket.io": "^2.0.3"
+    "socket.io": "^2.0.3",
+    "date-utils": "^1.2.21"
   }
 }
