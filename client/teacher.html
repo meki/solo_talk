@@ -4,35 +4,17 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login: Class Outis</title>
+    <title>Class Outis</title>
     <link rel="icon" type="image/png" href="/img/favicon.png">
 
-    <script src="/angular-1.6.5/angular.min.js"></script>
     <script src="/socket.io-client/dist/socket.io.slim.js"></script>
     <script src="/jquery/jquery-3.2.1.min.js"></script>
     <link rel="stylesheet" href="/semantic-ui/semantic.min.css">
     <script src="/semantic-ui/semantic.min.js"></script>
-    <script src="/js/app.js"></script>
     <link rel="stylesheet" href="/css/style.css">
-    
   </head>
   <body>
-	<form action="/login" method="post">
-		<div>
-			<label>ユーザーID：</label>
-			<input type="text" name="username"/>
-		</div>
-		<div>
-			<label>パスワード：</label>
-			<input type="password" name="password"/>
-    </div>
-    <div>
-			<label>ページID：</label>
-			<input type="text" name="pageID"/>
-		</div>
-		<div>
-			<input type="submit" value="ログイン"/>
-		</div>
-	</form>
+      <script src="/mithril/mithril.min.js"></script>
+      <script src="/js/teacher.js"></script>
   </body>
 </html>

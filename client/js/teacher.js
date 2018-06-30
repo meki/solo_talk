@@ -15,7 +15,7 @@ chat.vm = new function () {
     vm.send = function() {
       let e = document.getElementById("inputForm");
       if (e.value) {
-        socket.emit('chat message', {message: e.value});
+        socket.emit('teacher message', {message: e.value});
         e.value = "";
       }
     }
@@ -46,10 +46,13 @@ chat.oninit = function() {
 var cmpLowerBtn = function (){
   var r = {};
   r.view = function() {
-    // 送信ボタン
     var rChildren = [m("div#sendButton.ui teal right labeled icon button",
         {onclick: m.withAttr('value', chat.vm.send)},
         [m("i.send icon"), "送信"]
+      ),
+      m("div#logoutButton.ui red right labeled icon button",
+        {onclick: function(){ location.href = "logout"; }},
+        [m("i.sign out alternate icon"), "終了"]
       )];
 
     return m("div#sender.ui padded grid",
