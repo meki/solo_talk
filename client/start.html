@@ -1,0 +1,89 @@
+<!doctype html>
+<html ng-app="chat" lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Class Outis</title>
+    <link rel="icon" type="image/png" href="/img/favicon.png">
+
+    <script src="/socket.io-client/dist/socket.io.slim.js"></script>
+    <script src="/jquery/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="/semantic-ui/semantic.min.css">
+    <script src="/semantic-ui/semantic.min.js"></script>
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+
+.welcome-bk {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-image: url("img/welcome.jpg");
+  background-size: cover;
+}
+
+.welcome-bk2 {
+  width: 100%;
+  height: 100%;
+  padding: 14px;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+#welcome-form-box-wrap {
+  margin-top: 160px;
+  width: 100%;
+  height: 350px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+}
+
+#welcome-form-box {
+  width: 60%;
+  height: 350px;
+  margin: 0 auto;
+}
+
+h1.welcome-header {
+  text-align: center;
+  padding-top: 45px;
+  padding-bottom: 45px;
+}
+
+.ui.form .field > label {
+  color: rgba(255, 255, 255, 0.9);
+}
+    </style>
+  </head>
+  <body> 
+
+    <div class="welcome-bk">
+      <div class="welcome-bk2">
+          <div id="welcome-form-box-wrap">
+              <div id="welcome-form-box">
+                  <h1 class="welcome-header">
+                          Class Outis
+                  </h1>
+                  <div class="ui center">
+                    <form class="ui form" action="/enter-class" method="post">
+                      <div class="field">
+                          <label>Please Input Class ID</label>
+                          <div class="ui left icon input">
+                              <input type="number" name="class_id" placeholder="Class ID">
+                              <i class="smile icon"></i>
+                          </div>
+                      </div>
+
+                      <div class="field">
+                          <button type="submit" class="ui right labeled green icon button"><i class="comments icon"></i>Enter</button>
+                      </div>
+
+                  </form>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  </body>
+</html>

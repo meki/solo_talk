@@ -20,9 +20,10 @@ require('date-utils');
 // socket io
 var io = require('socket.io').listen(server);
 
-
-
 var LocalStrategy = require('passport-local').Strategy;
+
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // ここで username と password を確認して結果を返す
 passport.use(new LocalStrategy(function (username, password, done) {
@@ -40,7 +41,7 @@ app.use(express.static('client'));
 
 app.get('/', (req, res) => {
   // 必ずログインページに飛ばす
-  res.sendFile('login.html', { root: rootDir + '/client/'});
+  res.sendFile('start.html', { root: rootDir + '/client/'});
 });
 
 app.get('/login', (req, res) => {
@@ -50,16 +51,43 @@ app.get('/login', (req, res) => {
 app.get('/logout', function(req, res) {
   // メッセージを投稿できなくする
   appState.teacher_login = false;
+  io.sockets.emit('quit message');
   res.sendFile('login.html', { root: rootDir + '/client/'});
+  
+  var routes = app._router.stack;
+  routes.forEach(removeMiddlewares);
+  function removeMiddlewares(route, i, routes) {
+    switch (route.handle.name) {
+        case 'classRoomPage':
+            routes.splice(i, 1);
+    }
+    if (route.route)
+        route.route.stack.forEach(removeMiddlewares);
+  }
+
+  appState.pageID = "";
+});
+
+app.post('/enter-class', function(req, res) {
+  if(!appState.teacher_login) {
+    res.redirect('/');
+    return;
+  }
+  
+  if(req.body.class_id)
+  {
+    res.redirect('/' + req.body.class_id);
+  }
+  else
+  {
+    res.redirect('/');
+  }
 });
 
 app.use((err, req, res, next) => {
   console.log(err.stack);
   res.status(500).send({message: err.message});
 });
-
-const bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post('/login',
     passport.authenticate('local'),
@@ -69,18 +97,29 @@ app.post('/login',
       appState.pageID = req.body.pageID; //!< login フォームで入力したページID
 
       // 生徒のログイン用ページ作成
-      app.get('/' + appState.pageID, (req, res) => {
-        res.sendFile('home.html', { root: rootDir + '/client/', isOwner : req.query.isOwner});
-      });
+      function classRoomPage (req, res) {
+        if(appState.teacher_login)
+        {
+          res.sendFile('room.html', { root: rootDir + '/client/', isOwner : req.query.isOwner});
+        }
+        else
+        {
+          res.redirect('/');
+        }
+      };
+      app.get('/' + appState.pageID, classRoomPage);
 
       // 先生用のページを表示
       // TODO： 先生用の rootDir を作った方が良いかもしれない
       res.sendFile('teacher.html', { root: rootDir + '/client/'});
-
-      // TODO: npm install --save sleep-async をインストールして（今はエラーが発生して出来ない）
-      // ここで3秒くらい待った後に生徒ログイン用 url を io.emit してあげたい
     }
 );
+
+app.use(function(err, req, res, next) {
+  res.redirect('/');
+});
+
+// <<< routing
 
 passport.serializeUser(function(user, done) {
   done(null, user);

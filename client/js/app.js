@@ -33,7 +33,11 @@ chat.vm = new function () {
           // 外部イベントハンドラから処理が来た場合には再描画を明示的に呼ぶ必要がある
           m.redraw();
         }
-      })
+      });
+
+      socket.on('quit message', function() {
+        window.location.href='/';
+      });
     }) ()
   }
   return vm;
