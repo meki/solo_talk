@@ -33,22 +33,22 @@ nohup npm start > log.txt &
 
 自動起動登録
 ```
-systemctl enable sample-server
+systemctl enable class-outis
  ```
 
 起動
 ```
-systemctl start sample-server
+systemctl start class-outis
 ```
 
 終了
 ```
-systemctl stop sample-server
+systemctl stop class-outis
 ```
 
 再起動
 ```
-systemctl restart sample-server
+systemctl restart class-outis
 ```
 
 # テスト
@@ -60,4 +60,10 @@ npm test
 # 注意点？
 
 index.html というファイルを置いておくと app.get("/") が無視されてるっぽい。
-しょうがないので home.html にファイル名を変更した。
+しょうがないので start.html にファイル名を変更した。
+
+# TODO
+
+- CSRF対策とか必要？
+- マルチユーザ対応
+  - クラス削除のループを修正する必要がある
