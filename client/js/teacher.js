@@ -1,7 +1,31 @@
 "use strict";
 
-var chat = {};
 var socket = io();
+
+var chat = {};
+chat.view = function() {
+  return m("div.blank_box", [
+          chat.vm.list.map(function(data, i){
+            if(data.isTeacher)
+            {
+              // 先生は右側
+              return m('div#teacher.ui right floated large segment', [
+                m("i.white student icon")
+                , data.message
+              ]);
+            }
+            else
+            {
+              // 生徒は左側で背景色を互い違いに
+              let cls = (i % 2 === 0) ? '.ui left ou_even floated large segment' : '.ui left ou_odd floated large segment';
+              
+              return m('div' + cls, [
+                m('i.smile icon')
+                , data.message]);
+            }
+          })
+        ]);
+}
 
 chat.vm = new function () {
   // vm が戻り値
@@ -43,56 +67,31 @@ chat.oninit = function() {
   chat.vm.init();
 }
 
-var cmpLowerBtn = function (){
-  var r = {};
-  r.view = function() {
-    var rChildren = [m("div#sendButton.ui teal right labeled icon button",
-        {onclick: m.withAttr('value', chat.vm.send)},
-        [m("i.send icon"), "送信"]
+var buttons = {};
+buttons.view = function() {
+  var rChildren = [m("div#sendButton.ui teal right labeled icon button",
+      {onclick: m.withAttr('value', chat.vm.send)},
+      [m("i.send icon"), "送信"]
+    ),
+    m("div#logoutButton.ui red right labeled icon button",
+      {onclick: function(){ location.href = "logout"; }},
+      [m("i.sign out alternate icon"), "終了"]
+    )];
+
+  return m("div.row", [
+      m("div.twelve wide column",
+        m("textarea#inputForm",{placeholder: "メッセージを入力", type: "text", autocomplete: "off"})
       ),
-      m("div#logoutButton.ui red right labeled icon button",
-        {onclick: function(){ location.href = "logout"; }},
-        [m("i.sign out alternate icon"), "終了"]
-      )];
+      m("div.four wide column", rChildren)
+    ]);
+};
 
-    return m("div#sender.ui padded grid",
-      m("div.row", [
-        m("div.twelve wide column",
-          m("textarea#inputForm",{placeholder: "メッセージを入力", type: "text", autocomplete: "off"})
-        ),
-        m("div.four wide column", rChildren)
-      ])
-    );
-  }
-  return r;
+buttons.oninit = function() {
+  buttons.view();
 }
 
-chat.view = function(ctrl) {
-  return m("div#wrapper",
-            [m("div#messages", [
-              chat.vm.list.map(function(data, i){
-                if(data.isTeacher)
-                {
-                  // 先生は右側
-                  return m('div#teacher.ui right floated large segment', [
-                    m("i.white student icon")
-                    , data.message
-                  ]);
-                }
-                else
-                {
-                  // 生徒は左側で背景色を互い違いに
-                  let cls = (i % 2 === 0) ? '.ui left ou_even floated large segment' : '.ui left ou_odd floated large segment';
-                  
-                  return m('div' + cls, [
-                    m('i.smile icon')
-                    , data.message]);
-                }
-              })
-            ]),
-            m(cmpLowerBtn())]
-          );
-}
+var dom_messages = document.getElementById("messages");
+m.mount(dom_messages, chat);
 
-var root = document.body;
-m.mount(root, chat);
+var dom_buttons = document.getElementById("sender");
+m.mount(dom_buttons, buttons);

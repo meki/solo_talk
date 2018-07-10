@@ -81,3 +81,10 @@ div#logoutButton {
 	color: #fff;
 	padding-left: 8px;
 }
+
+.blank_box {
+	margin: 0px;
+	padding: 0px;
+	height: auto;
+	overflow: hidden;
+}
