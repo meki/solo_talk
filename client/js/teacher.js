@@ -10,7 +10,7 @@ chat.view = function() {
             {
               // 先生は右側
               return m('div#teacher.ui right floated large segment', [
-                m("i.white student icon")
+                m("i.red thumbs up outline large icon")
                 , data.message
               ]);
             }
@@ -20,7 +20,7 @@ chat.view = function() {
               let cls = (i % 2 === 0) ? '.ui left ou_even floated large segment' : '.ui left ou_odd floated large segment';
               
               return m('div' + cls, [
-                m('i.smile icon')
+                m('i.smile large icon')
                 , data.message]);
             }
           })
