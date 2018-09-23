@@ -3,22 +3,42 @@
 const express = require('express');
 const app = express();
 var appState = require('./appState');
-app.set('port', process.env.PORT || 3000);
+const fs = require('fs');
+const http = require('http');
+const https = require('https');
 
 const rootDir = __dirname + "/..";
 
 const passport = require('passport');
 app.use(passport.initialize());
 
+// Certificate
+const privateKey = fs.readFileSync('/etc/letsencrypt/live/class-outis.net/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('/etc/letsencrypt/live/class-outis.net/cert.pem', 'utf8');
+const ca = fs.readFileSync('/etc/letsencrypt/live/class-outis.net/chain.pem', 'utf8');
 
-const server = app.listen(app.get('port'));
-console.log("server listening on port " + app.get('port'));
+const credentials = {
+	key: privateKey,
+	cert: certificate,
+	ca: ca
+};
+
+// Starting https server
+const httpsServer = https.createServer(credentials, app);
+
+httpsServer.listen(443, () => {
+  console.log('HTTPS server running on port 443');
+});
+
+http.createServer((express()).all("*", function (request, response) {
+  response.redirect(`https://class-outis.net`);
+})).listen(80);
 
 // date time utility
 require('date-utils');
 
 // socket io
-var io = require('socket.io').listen(server);
+var io = require('socket.io').listen(httpsServer);
 
 var LocalStrategy = require('passport-local').Strategy;
 
@@ -44,7 +64,8 @@ app.get('/', (req, res) => {
   res.sendFile('start.html', { root: rootDir + '/client/'});
 });
 
-app.get('/login', (req, res) => {
+// ログインページ（URLが攻撃者に推測されにくいようにしてある)
+app.get('/fyyc9xn29-mw', (req, res) => {
   res.sendFile('login.html', { root: rootDir + '/client/'});
 });
 
@@ -52,7 +73,7 @@ app.get('/logout', function(req, res) {
   // メッセージを投稿できなくする
   appState.teacher_login = false;
   io.sockets.emit('quit message');
-  res.sendFile('login.html', { root: rootDir + '/client/'});
+  res.redirect(`/`);
   
   var routes = app._router.stack;
   routes.forEach(removeMiddlewares);
