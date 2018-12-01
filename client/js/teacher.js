@@ -1,5 +1,8 @@
 "use strict";
 
+// teacher only URL pattern
+var reg = new RegExp("((https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))");
+
 var socket = io();
 
 var chat = {};
@@ -9,10 +12,20 @@ chat.view = function() {
             if(data.isTeacher)
             {
               // 先生は右側
-              return m('div#teacher.ui right floated large segment', [
-                m("i.red thumbs up outline large icon")
-                , data.message
-              ]);
+              if(data.message.match(reg))
+              {
+                return m('div#teacher.ui right floated large segment', [
+                  m("i.red thumbs up outline large icon")
+                  , m("a", {href: data.message, target: '_blank'},[data.message])
+                ]);
+              }
+              else
+              {
+                return m('div#teacher.ui right floated large segment', [
+                  m("i.red thumbs up outline large icon")
+                  , data.message
+                ]);
+              }
             }
             else
             {
