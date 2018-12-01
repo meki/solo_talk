@@ -56,6 +56,10 @@ chat.vm = new function () {
         } finally {
           // 外部イベントハンドラから処理が来た場合には再描画を明示的に呼ぶ必要がある
           m.redraw();
+          // ダサいけどこれで一番下までスクロール
+          $('#wrapper').delay(100).animate({
+            scrollTop: 100000000
+          },500);
         }
       })
     }) ()

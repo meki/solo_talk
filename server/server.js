@@ -12,6 +12,11 @@ const rootDir = __dirname + "/..";
 const passport = require('passport');
 app.use(passport.initialize());
 
+var io = null;
+
+// server
+// 本番環境: true, 開発環境: false
+if(true) {
 // Certificate
 const privateKey = fs.readFileSync('/etc/letsencrypt/live/class-outis.net/privkey.pem', 'utf8');
 const certificate = fs.readFileSync('/etc/letsencrypt/live/class-outis.net/cert.pem', 'utf8');
@@ -34,11 +39,20 @@ http.createServer((express()).all("*", function (request, response) {
   response.redirect(`https://class-outis.net`);
 })).listen(80);
 
+// socket io
+io = require('socket.io').listen(httpsServer);
+}
+else {
+// 開発環境
+app.set('port', process.env.PORT || 3000);
+const server = app.listen(app.get('port'));
+console.log("server listening on port " + app.get('port'));
+// socket io
+io = require('socket.io').listen(server);
+}
+
 // date time utility
 require('date-utils');
-
-// socket io
-var io = require('socket.io').listen(httpsServer);
 
 var LocalStrategy = require('passport-local').Strategy;
 
