@@ -16,11 +16,11 @@ var io = null;
 
 // server
 // 本番環境: true, 開発環境: false
-if(false) {
+if(true) {
 // Certificate
-const privateKey = fs.readFileSync('/etc/letsencrypt/live/moraso.jp/privkey.pem', 'utf8');
-const certificate = fs.readFileSync('/etc/letsencrypt/live/moraso.jp/cert.pem', 'utf8');
-const ca = fs.readFileSync('/etc/letsencrypt/live/moraso.jp/chain.pem', 'utf8');
+const privateKey = fs.readFileSync('/etc/letsencrypt/live/class-outis.net/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('/etc/letsencrypt/live/class-outis.net/cert.pem', 'utf8');
+const ca = fs.readFileSync('/etc/letsencrypt/live/class-outis.net/chain.pem', 'utf8');
 
 const credentials = {
 	key: privateKey,
@@ -36,7 +36,7 @@ httpsServer.listen(443, () => {
 });
 
 http.createServer((express()).all("*", function (request, response) {
-  response.redirect(`https://moraso.jp`);
+  response.redirect(`https://class-outis.net`);
 })).listen(80);
 
 // socket io
@@ -73,17 +73,24 @@ passport.use(new LocalStrategy(function (username, password, done) {
 // set static file dir
 app.use(express.static('client', { dotfiles: 'allow' }));
 
+function log_access(uri) {
+  console.log('access: ' + uri);
+}
+
 app.get('/', (req, res) => {
   // 必ずログインページに飛ばす
+  log_access('/');
   res.sendFile('start.html', { root: rootDir + '/client/'});
 });
 
 // ログインページ（URLが攻撃者に推測されにくいようにしてある)
 app.get('/yumenokumo', (req, res) => {
+  log_access('/yumenokumo');
   res.sendFile('login.html', { root: rootDir + '/client/'});
 });
 
 app.get('/logout', function(req, res) {
+  log_access('/logout');
   // メッセージを投稿できなくする
   appState.teacher_login = false;
   io.sockets.emit('quit message');
