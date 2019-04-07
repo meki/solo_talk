@@ -71,7 +71,7 @@ passport.use(new LocalStrategy(function (username, password, done) {
 }));
 
 // set static file dir
-app.use(express.static('client'));
+app.use(express.static('client'), { dotfiles: 'allow' });
 
 app.get('/', (req, res) => {
   // 必ずログインページに飛ばす
