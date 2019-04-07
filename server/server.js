@@ -17,7 +17,7 @@ log4js.configure('log4js.config.json');
 var systemLogger = log4js.getLogger(); 
 var accessLogger = log4js.getLogger('web');
 
-app.use(log4js.connectLogger(accessLogger));
+// app.use(log4js.connectLogger(accessLogger));
 
 const passport = require('passport');
 app.use(passport.initialize());
@@ -26,7 +26,7 @@ var io = null;
 
 // server
 // 本番環境: true, 開発環境: false
-if(false) {
+if(true) {
 // Certificate
 const privateKey = fs.readFileSync('/etc/letsencrypt/live/class-outis.net/privkey.pem', 'utf8');
 const certificate = fs.readFileSync('/etc/letsencrypt/live/class-outis.net/cert.pem', 'utf8');
