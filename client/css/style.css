@@ -58,6 +58,7 @@ div#logoutButton {
 
 
 #messages {
+	top: 400px;
 	width: 100%;
 }
 

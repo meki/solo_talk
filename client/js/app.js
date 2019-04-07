@@ -1,7 +1,56 @@
 "use strict";
 
-// teacher only URL pattern
-var reg = new RegExp("((https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+))");
+function ShowText(str)
+{
+  var message = document.getElementById( 'inputForm' );
+  message.value = str;
+}
+
+window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+if( ! window.SpeechRecognition )
+{
+  ShowText('お使いのブラウザでは、Speech APIはサポートされていません。');
+}
+
+var recognition = new window.SpeechRecognition();
+// recognition.interimResults = true;
+recognition.continuous = true;
+
+var isContinuousMode = true;
+
+recognition.onerror = function( event )
+{
+  if( event.error != 'aborted' ) {
+    ShowText('ERROR:' + event.error);
+  }
+}
+
+recognition.onend = function(event)
+{
+  if(isContinuousMode) {
+    ShowText("再スタート");
+    recognition.start();
+  } 
+}
+
+// onnomatch を入れると認識が失敗した結果も入る
+recognition.onnomatch = recognition.onresult = function( event )
+//recognition.onresult = function( event )
+{
+  let results = event.results;
+  let len = results.length;
+  if(results.length > 0) {
+    socket.emit('chat message', {message: event.results[len - 1][0].transcript});
+  }
+}
+
+var imageIdx = 0;
+function switchImage() {
+  let img = document.getElementById("image_panel");
+  img.src = "/img/" + ("000" + imageIdx).slice(-3) + ".jpg";
+}
+
+//////////////////////
 
 var socket = io();
 
@@ -9,33 +58,12 @@ var chat = {};
 chat.view = function() {
   return m("div.blank_box", [
           chat.vm.list.map(function(data, i){
-            if(data.isTeacher)
-            {
-              // 先生は右側
-              if(data.message.match(reg))
-              {
-                return m('div#teacher.ui right floated large segment', [
-                  m("i.red thumbs up outline large icon")
-                  , m("a", {href: data.message, target: '_blank'},[data.message])
-                ]);
-              }
-              else
-              {
-                return m('div#teacher.ui right floated large segment', [
-                  m("i.red thumbs up outline large icon")
-                  , data.message
-                ]);
-              }
-            }
-            else
-            {
-              // 生徒は左側で背景色を互い違いに
-              let cls = (i % 2 === 0) ? '.ui left ou_even floated large segment' : '.ui left ou_odd floated large segment';
-              
-              return m('div' + cls, [
-                m('i.smile large icon')
-                , data.message]);
-            }
+
+            let cls = (i % 2 === 0) ? '.ui left ou_even floated large segment' : '.ui left ou_odd floated large segment';
+            
+            return m('div' + cls, [
+              m('i.smile large icon')
+              , data.message]);
           })
         ]);
 }
@@ -50,11 +78,18 @@ chat.vm = new function () {
 
     // 送信ボタン
     vm.send = function() {
-      let e = document.getElementById("inputForm");
+      /*let e = document.getElementById("inputForm");
       if (e.value) {
         socket.emit('chat message', {message: e.value});
         e.value = "";
-      }
+      }*/
+      isContinuousMode = true;
+      recognition.start();
+      ShowText("音声認識開始")
+      setInterval(() => {
+        imageIdx++;
+        switchImage();
+      }, 60000);
     }
 
     // サーバからのデータ受信
@@ -92,12 +127,21 @@ var buttons = {};
 buttons.view = function() {
   // 送信ボタン
   var rChildren = [m("div#sendButton.ui teal right labeled icon button",
-  {onclick: m.withAttr('value', chat.vm.send)},
-  [m("i.send icon"), "送信"])];
+      {onclick: m.withAttr('value', chat.vm.send)},
+      [m("i.send icon"), "開始"]
+    ),
+    m("div#logoutButton.ui red right labeled icon button",
+      {onclick: function(){
+        isContinuousMode = false;
+        recognition.abort();
+        ShowText("終了");
+      }},
+      [m("i.sign out alternate icon"), "終了"]
+    )];
 
   return m("div.row", [
       m("div.twelve wide column",
-        m("textarea#inputForm",{placeholder: "メッセージを入力", type: "text", autocomplete: "off"})
+        m("textarea#inputForm",{placeholder: "", type: "text", autocomplete: "off"})
       ),
       m("div.four wide column", rChildren)
     ]);

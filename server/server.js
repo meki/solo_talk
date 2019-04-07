@@ -16,7 +16,7 @@ var io = null;
 
 // server
 // 本番環境: true, 開発環境: false
-if(true) {
+if(false) {
 // Certificate
 const privateKey = fs.readFileSync('/etc/letsencrypt/live/class-outis.net/privkey.pem', 'utf8');
 const certificate = fs.readFileSync('/etc/letsencrypt/live/class-outis.net/cert.pem', 'utf8');
@@ -61,7 +61,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // ここで username と password を確認して結果を返す
 passport.use(new LocalStrategy(function (username, password, done) {
-  let isSuccess = (username ==='minami' && password === 'jamesPapipupupepepo');
+  let isSuccess = (username ==='sashida' && password === 'moraso37564');
   if (!isSuccess) {
     return done(null, false, {message: 'ログインに失敗しました。'});
   }
@@ -79,7 +79,7 @@ app.get('/', (req, res) => {
 });
 
 // ログインページ（URLが攻撃者に推測されにくいようにしてある)
-app.get('/fyyc9xn29-mw', (req, res) => {
+app.get('/yumenokumo', (req, res) => {
   res.sendFile('login.html', { root: rootDir + '/client/'});
 });
 
