@@ -15,111 +15,11 @@
   </head>
   <body>
     <div id="wrapper">
+      <img id="image_panel" style="position: fixed; width: 960px; top: 32px; left:calc(50% - 640px/2);" src="img/welcome.jpg"/>
       <div id="messages"></div>
 
 
-      <h4>continuous</h4>
-      <p>認識単位ごとに、結果を返すように指示できます。</p>
-      <div class="example-box" style="height: 600px; overflow: scroll">
-        <p>認識単位ごとに、結果をリスト表示します。確定前の結果はグレー、確定後は黒と、文字色で状態を表します。</p>
-        <form id="form_speech">
-          <input id="btn_speech" type="submit" value="開始" /><span>&nbsp;</span>
-          <ol id="lst_speech"></ol>
-        </form>
-      </div>
-    <script type="text/javascript">
-    
-    
-    window.onload = function()
-    {
-    var form = document.getElementById("form_speech");
-    var button = document.getElementById( 'btn_speech' );
-    var progress = document.getElementById( 'lst_speech' );
-    
-    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if( ! window.SpeechRecognition )
-    {
-    button.disabled = true;
-    
-    var message = document.createElement( 'div' );
-    message.className = 'warning-message';
-    message.appendChild( document.createTextNode( 'お使いのブラウザでは、Speech APIはサポートされていません。' ) );
-    form.parentNode.insertBefore( message, form );
-    }
-    else
-    {
-    var recognition = new window.SpeechRecognition();
-    recognition.onerror = function( event )
-    {
-      if( event.error != 'aborted' ) window.alert( 'ERROR:' + event.error );
-    }
-    recognition.onstart =
-    recognition.onend =
-    recognition.onaudiostart =
-    recognition.onaudioend =
-    recognition.onsoundstart =
-    recognition.onsoundend =
-    recognition.onspeechstart =
-    recognition.onspeechend = function( event )
-    {
-      button.nextSibling.firstChild.data = event.type;
-      if( event.type.indexOf( 'end' ) != -1 )
-      {
-        button.value = '開始';
-        button.nextSibling.className = '';
-      }
-    }
-    recognition.onnomatch = recognition.onresult = function( event )
-    {
-      var results = event.results;
-      if( 0 < results.length )
-      {
-        for( var i = 0; i < results.length; i++ )
-        {
-          var listItem = progress.childNodes[ i ];
-          if( ! listItem )
-          {
-            listItem = progress.appendChild( document.createElement( 'li' ) );
-            listItem.appendChild( document.createTextNode( '' ) );
-          }
-          listItem.firstChild.data = results[ i ][ 0 ].transcript;
-          listItem.style.color = ( results[ i ].final || results[ i ].isFinal )? 'black' : 'gray';
-        }
-    
-        while( progress.childNodes[ results.length ] )
-        {
-          progress.removeChild( progress.childNodes[ results.length ]);
-        }
-      }
-    }
-    
-    form.onsubmit = function()
-    {
-      if( button.value == '停止' )
-      {
-        button.value = '開始';
-        recognition.abort();
-      }
-      else
-      {
-        button.value = '停止';
-        button.nextSibling.className = 'loading';
-    
-        while( progress.firstChild ) progress.removeChild( progress.firstChild );
-    
-        recognition.interimResults = true;
-        recognition.continuous = true;
-        recognition.start();
-      }
-      return false;
-    }
-    }
-    };
-    </script>
-
-
-
-      <div id="sender" class="ui padded grid"></div>
+    <div id="sender" class="ui padded grid"></div>
     </div>
 
     <script src="/mithril/mithril.min.js"></script>

@@ -9,6 +9,16 @@ const https = require('https');
 
 const rootDir = __dirname + "/..";
 
+// log4js
+var log4js = require('log4js');
+log4js.configure('log4js.config.json');
+
+//logger
+var systemLogger = log4js.getLogger(); 
+var accessLogger = log4js.getLogger('web');
+
+app.use(log4js.connectLogger(accessLogger));
+
 const passport = require('passport');
 app.use(passport.initialize());
 
@@ -16,7 +26,7 @@ var io = null;
 
 // server
 // 本番環境: true, 開発環境: false
-if(true) {
+if(false) {
 // Certificate
 const privateKey = fs.readFileSync('/etc/letsencrypt/live/class-outis.net/privkey.pem', 'utf8');
 const certificate = fs.readFileSync('/etc/letsencrypt/live/class-outis.net/cert.pem', 'utf8');
@@ -73,24 +83,17 @@ passport.use(new LocalStrategy(function (username, password, done) {
 // set static file dir
 app.use(express.static('client', { dotfiles: 'allow' }));
 
-function log_access(uri) {
-  console.log('access: ' + uri);
-}
-
 app.get('/', (req, res) => {
   // 必ずログインページに飛ばす
-  log_access('/');
   res.sendFile('start.html', { root: rootDir + '/client/'});
 });
 
 // ログインページ（URLが攻撃者に推測されにくいようにしてある)
 app.get('/yumenokumo', (req, res) => {
-  log_access('/yumenokumo');
   res.sendFile('login.html', { root: rootDir + '/client/'});
 });
 
 app.get('/logout', function(req, res) {
-  log_access('/logout');
   // メッセージを投稿できなくする
   appState.teacher_login = false;
   io.sockets.emit('quit message');
@@ -191,7 +194,12 @@ io.on('connection', (socket) => {
         msg.message = "<teacher login>";
       }
 
-      io.emit('chat message', {message: msg.message, isTeacher: (socket.id === teacherId) ? true : false});
+      systemLogger.info(',%s,%s', socket.id, msg.message);
+
+      if(Math.random() < 0.25)
+      {
+        io.emit('chat message', {message: msg.message, isTeacher: (socket.id === teacherId) ? true : false});
+      }
     }
   });
 
@@ -199,7 +207,11 @@ io.on('connection', (socket) => {
     if(!appState.teacher_login) { return; }
 
     if(msg.message) {
-      io.emit('chat message', {message: msg.message, isTeacher: true});
+      systemLogger.info(',%s,%s', socket.id, msg.message);
+      if(Math.random() < 0.25)
+      {
+        io.emit('chat message', {message: msg.message, isTeacher: true});
+      }
     }
   });
 

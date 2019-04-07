@@ -1,0 +1,10 @@
+{
+    "appenders": {
+        "system": {"type": "file", "filename": "system.log"},
+        "access": {"type": "file", "filename": "access.log"}
+    },
+    "categories": {
+        "default": {"appenders":["system"], "level": "debug"},
+        "web": {"appenders": ["access"], "level": "info"}
+    }
+}
