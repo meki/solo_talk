@@ -17,7 +17,7 @@ log4js.configure('log4js.config.json');
 var systemLogger = log4js.getLogger(); 
 var accessLogger = log4js.getLogger('web');
 
-// app.use(log4js.connectLogger(accessLogger));
+app.use(log4js.connectLogger(accessLogger));
 
 const passport = require('passport');
 app.use(passport.initialize());

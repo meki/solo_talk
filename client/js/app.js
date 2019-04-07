@@ -6,6 +6,21 @@ function ShowText(str)
   message.value = str;
 }
 
+function ShowText2(str)
+{
+  if(Math.random() < 0.5)
+  {
+    var message = document.getElementById( 'jimaku1' );
+    message.innerText = str;
+  }
+  else
+  {
+    var message = document.getElementById( 'jimaku2' );
+    message.innerText = str;
+  }
+}
+
+
 window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 if( ! window.SpeechRecognition )
 {
@@ -28,7 +43,7 @@ recognition.onerror = function( event )
 recognition.onend = function(event)
 {
   if(isContinuousMode) {
-    ShowText("再スタート");
+    // ShowText("再スタート");
     recognition.start();
   } 
 }
@@ -85,7 +100,7 @@ chat.vm = new function () {
       }*/
       isContinuousMode = true;
       recognition.start();
-      ShowText("音声認識開始")
+      // ShowText("音声認識開始")
       setInterval(() => {
         imageIdx++;
         switchImage();
@@ -97,7 +112,8 @@ chat.vm = new function () {
       socket.on('chat message', function(data) {
         try {
           if(data.message) {
-            vm.list.push(data);
+            ShowText2(data.message);
+            // vm.list.push(data);
           }
         } catch(e) {
           alert('there is a problem: ', e);
@@ -105,9 +121,9 @@ chat.vm = new function () {
           // 外部イベントハンドラから処理が来た場合には再描画を明示的に呼ぶ必要がある
           m.redraw();
           // ダサいけどこれで一番下までスクロール
-          $('#wrapper').delay(100).animate({
+          /*$('#wrapper').delay(100).animate({
             scrollTop: 100000000
-          },500);
+          },500);*/
         }
       });
 
