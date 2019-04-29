@@ -26,7 +26,7 @@ var io = null;
 
 // server
 // 本番環境: true, 開発環境: false
-if(false) {
+if(true) {
 // Certificate
 const privateKey = fs.readFileSync('/etc/letsencrypt/live/moraso.jp/privkey.pem', 'utf8');
 const certificate = fs.readFileSync('/etc/letsencrypt/live/moraso.jp/cert.pem', 'utf8');
@@ -196,7 +196,7 @@ io.on('connection', (socket) => {
 
       systemLogger.info(',%s,%s', socket.id, msg.message);
 
-      if(Math.random() < 1)
+      if(Math.random() < 0.25)
       {
         io.emit('chat message', {message: msg.message, isTeacher: (socket.id === teacherId) ? true : false});
       }
@@ -208,7 +208,7 @@ io.on('connection', (socket) => {
 
     if(msg.message) {
       systemLogger.info(',%s,%s', socket.id, msg.message);
-      if(Math.random() < 1)
+      if(Math.random() < 0.25)
       {
         io.emit('chat message', {message: msg.message, isTeacher: true});
       }
