@@ -2,8 +2,8 @@
 
 function ShowText(str)
 {
-  var message = document.getElementById( 'inputForm' );
-  message.value = str;
+//  var message = document.getElementById( 'inputForm' );
+//  message.value = str;
 }
 
 function ShowText2(str)
@@ -101,6 +101,7 @@ chat.vm = new function () {
       isContinuousMode = true;
       recognition.start();
       // ShowText("音声認識開始")
+      alert('start ninsihi');
       setInterval(() => {
         imageIdx++;
         switchImage();
@@ -170,5 +171,5 @@ buttons.oninit = function() {
 var dom_messages = document.getElementById("messages");
 m.mount(dom_messages, chat);
 
-var dom_buttons = document.getElementById("sender");
-m.mount(dom_buttons, buttons);
+// var dom_buttons = document.getElementById("sender");
+// m.mount(dom_buttons, buttons);

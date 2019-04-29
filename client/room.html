@@ -16,20 +16,41 @@
   <body>
     <div id="wrapper">
       <img id="image_panel" style="position: fixed; width: 960px; top: 16px; left:calc(50% - 960px/2);" src="img/welcome.jpg"/>
-      <div id ="jimaku1" style="position: fixed; color:white; width: 800px; bottom: 210px; left:calc(50% - 800px/2); text-shadow: black 1px 1px 0px, black -1px 1px 0px, black 1px -1px 0px, black -1px -1px 0px;">
-          
-      </div>
-      <div id ="jimaku2" style="position: fixed; color:white; width: 700px; bottom: 160px; left:calc(50% - 800px/2); text-shadow: black 1px 1px 0px, black -1px 1px 0px, black 1px -1px 0px, black -1px -1px 0px;">
-        
-      </div>
       
+      <div id="jimaku_container" style="position: fixed; color:white; width: 880px; bottom: 80px; left:calc(50% - 880px/2); text-shadow: black 2px 2px 0px, black -2px 2px 0px, black 2px -2px 0px, black -2px -2px 0px;">
+        <div id ="jimaku1">
+        
+        </div>
+        <div id ="jimaku2" style="margin-top: 24px;">
+          
+        </div>  
+      </div>
       <div id="messages"></div>
 
+    <div id="sendButton" class="ui green right labeled icon button" onclick="btn_start()" style="position: fixed; bottom:16px; right: 150px;">
+      <i class="send icon"></i>開始
+    </div>
 
-    <div id="sender" class="ui padded grid"></div>
+    <div id="logoutButton" class="ui red right labeled icon button" onclick="btn_stop()" style="position: fixed; bottom:16px; right: 32px;">
+      <i class="sign out alternate icon"></i>終了
     </div>
 
     <script src="/mithril/mithril.min.js"></script>
     <script src="/js/app.js"></script>
+    <script>
+      function btn_stop() {
+        isContinuousMode = false;
+        recognition.abort();
+      }
+      function btn_start() {
+        isContinuousMode = true;
+        recognition.start();
+        ShowText2("音声認識開始")
+        setInterval(() => {
+          imageIdx++;
+          switchImage();
+        }, 60000);
+      }
+    </script>
   </body>
 </html>
