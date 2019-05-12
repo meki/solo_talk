@@ -17,7 +17,7 @@
     <div id="wrapper">
       <img id="image_panel" style="position: fixed; width: 960px; top: 16px; left:calc(50% - 960px/2);" src="img/welcome.jpg"/>
       
-      <div id="jimaku_container" style="position: fixed; color:white; width: 880px; bottom: 80px; left:calc(50% - 880px/2); text-shadow: black 2px 2px 0px, black -2px 2px 0px, black 2px -2px 0px, black -2px -2px 0px;">
+      <div id="jimaku_container" style="font-size: 120%; position: fixed; color:white; width: 880px; bottom: 80px; left:calc(50% - 880px/2); text-shadow: black 2px 2px 0px, black -2px 2px 0px, black 2px -2px 0px, black -2px -2px 0px;">
         <div id ="jimaku1">
         
         </div>
@@ -45,7 +45,9 @@
       function btn_start() {
         isContinuousMode = true;
         recognition.start();
-        ShowText2("音声認識開始")
+        ShowText2("実験スタートです。画面を見ながら1時間自由に喋って下さい。")
+        imageIdx++;
+        switchImage();
         setInterval(() => {
           imageIdx++;
           switchImage();
